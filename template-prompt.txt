@@ -1,0 +1,23 @@
+$org-map-distiller
+
+請根據 `./materials/` 裡面的參考資料，建立或更新 `kgi-map` 這個人物／組織關係圖譜 skill。
+
+目標輸出位置：
+
+`./skills/kgi-map/`
+
+請產生或更新：
+
+- `./skills/kgi-map/SKILL.md`
+- `./skills/kgi-map/references/events.md`
+- `./skills/kgi-map/references/people.md`
+- `./skills/kgi-map/references/relationships.md`
+- `./skills/kgi-map/references/graph-summary.md`
+- `./skills/kgi-map/references/open-questions.md`
+- `./skills/kgi-map/references/risks.md`
+
+如果 `./skills/kgi-map/` 已存在，請讀取既有內容後做增量更新，不要整份重寫。
+如果不存在，請建立完整框架。
+
+先抽事件，再整理人物與關係，最後更新 `SKILL.md` 的 Fast Map Summary。
+所有人物與關係判斷都必須回到 event ID。
