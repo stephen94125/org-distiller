@@ -1,6 +1,6 @@
 ---
 name: org-map-distiller
-description: "Meta-skill for distilling small-group or organization communication records into a portable <org_name>-map skill. Use when analyzing LINE chats, email, meeting notes, interviews, observation notes, documents, or recurring team records to generate an evidence-backed map skill containing events, people profiles, relationship maps, graph summaries, risks, and open questions."
+description: "Meta-skill for creating or updating a portable <org_name>-map skill from small-group or organization communication records. Use when analyzing LINE chats, email, meeting notes, interviews, observation notes, documents, or recurring team records to generate or incrementally update an evidence-backed map skill containing events, people profiles, relationship maps, graph summaries, risks, and open questions."
 ---
 
 # Org Map Distiller
@@ -91,26 +91,36 @@ If evidence is weak, produce partial artifacts and mark confidence honestly. Mis
 
 ## Workflow
 
-### 1. Determine Target
+### 1. Determine Target and Existing Map State
 
 Identify:
 
-* target group or organization name
-* target skill name
-* output directory
-* source type
-* time range
-* participants
-* aliases
-* language
-* channel
-* completeness
-* privacy constraints
-* missing context
+- target group or organization name
+- target skill name
+- output directory
+- whether the target map skill already exists
+- whether existing `SKILL.md` and six reference artifacts are present
+- source type
+- time range
+- participants
+- aliases
+- language
+- channel
+- completeness
+- privacy constraints
+- missing context
 
-Do not assume the dataset is complete.
+Target skill naming:
 
-If the user did not specify the target skill name, use `<group-name>-map` when a group name is available. Otherwise use `org-map`.
+1. If the user specifies a target skill name, use it.
+2. If the user specifies a group or organization name, generate `<group-name>-map`.
+3. If no name is specified, use `org-map`.
+
+Then check whether `<target-skill-name>/` already exists.
+
+If it does not exist, create the full target map skill directory and run the full extraction workflow.
+
+If it already exists, read existing `SKILL.md` and six reference artifacts, then treat the new input as an incremental batch. Follow `Existing Map and Incremental Merge`.
 
 ### 2. Extract Entities and Events
 
@@ -274,18 +284,69 @@ The generated skill must route future agents like this:
 * `open-questions.md`: use when evidence is missing or the user asks what to investigate next.
 * `risks.md`: use before making negative, sensitive, or weaponizable claims.
 
-## Incremental Merge
+## Existing Map and Incremental Merge
 
-When new data arrives:
+Before creating a new map skill, always check whether `<target-skill-name>/` already exists.
 
-1. Append new events first.
-2. Update people only if new event evidence changes the pattern.
-3. Update relationships only with event support.
-4. Update graph summary after people and relationships.
-5. Update risks and open questions.
-6. Preserve older conclusions unless new evidence contradicts them.
-7. Record contradictions explicitly and never silently overwrite prior interpretations.
-8. Update the generated `SKILL.md` fast map summary only after the six references are updated.
+### If the target map does not exist
+
+Create:
+
+```text
+<target-skill-name>/
+  SKILL.md
+  references/
+    events.md
+    people.md
+    relationships.md
+    graph-summary.md
+    open-questions.md
+    risks.md
+```
+
+Then run the full workflow:
+
+1. extract events
+2. build people profiles
+3. build relationship maps
+4. synthesize graph summary
+5. create open questions
+6. create risks
+7. generate `SKILL.md`
+
+### If the target map already exists
+
+Use the existing map as the baseline.
+
+Read:
+
+* `SKILL.md`
+* `references/events.md`
+* `references/people.md`
+* `references/relationships.md`
+* `references/graph-summary.md`
+* `references/open-questions.md`
+* `references/risks.md`
+
+Then process the new input as an incremental batch.
+
+Update order:
+
+1. Append new events to `references/events.md`.
+2. Update `references/people.md` only if new event evidence changes or strengthens a person pattern.
+3. Update `references/relationships.md` only if new event evidence supports a relationship change.
+4. Update `references/graph-summary.md` after people and relationships are updated.
+5. Update `references/open-questions.md` by resolving answered questions and adding new ones.
+6. Update `references/risks.md` when new sensitive, low-confidence, contradictory, or weaponizable claims appear.
+7. Update `SKILL.md` fast map summary last.
+
+Rules:
+
+* Do not silently overwrite old conclusions.
+* Do not delete old interpretations unless the user explicitly asks or new evidence clearly invalidates them.
+* If new evidence conflicts with old conclusions, preserve both and mark the contradiction.
+* If new evidence only weakly suggests a change, add it as a low-confidence hypothesis or open question.
+* All upgraded claims must cite event IDs.
 
 ## Confidence Labels
 
