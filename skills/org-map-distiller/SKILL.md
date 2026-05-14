@@ -1,5 +1,5 @@
 ---
-name: organization-relationship-map
+name: org-map-distiller
 description: "Distill small-group or organization communication records into evidence-backed events, people profiles, relationship maps, graph summaries, risks, and open questions. Use when analyzing LINE chats, email, meeting notes, interviews, observation notes, documents, or recurring team records to understand roles, power, trust, conflict, dependency, information flow, decision flow, responsibility flow, informal organization, and stable interaction patterns without jumping to unsupported personality judgments."
 ---
 
